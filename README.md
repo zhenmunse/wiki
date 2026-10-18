@@ -19,6 +19,22 @@ The component follows Vue's lifecycle, cancels obsolete requests, and prevents o
 
 **No iframe, theme code injection, page-body rewriting, or menu commits to Git sync are involved.** Only component code lives in this repository. Menu data, translations, model calls, snapshots, administration and Bot delivery belong to the separate Aggie Bites service. A Wiki outage does not stop that service's worker or Bot.
 
+### Bilingual footer override
+
+The existing Footer Override setting accepts `Chinese text || English text`.
+Pages whose `page/locale` starts with `zh` render the Chinese side; other languages
+render the English side. For example:
+
+```text
+由学生维护的 [Agroverse](https://wiki.ucdavis.top/zh/home) || Student-run [Agroverse](https://wiki.ucdavis.top/en/home)
+```
+
+Without `||`, the original string is rendered exactly as before. Only the first
+separator splits the two languages; additional separators remain in the English
+text. If the selected side is empty, the other side is used. Markdown links remain
+supported and raw HTML remains disabled. Save this in the normal Wiki footer
+setting; no per-page editing or theme injection is needed.
+
 ## Using the homepage section
 
 1. Open the Wiki's `home` page, for example `/zh/home` or `/en/home`.
@@ -61,16 +77,15 @@ Dynamic upstream resolution allows Nginx to start even if the menu container is 
 
 Running the unmodified `ghcr.io/requarks/wiki:2` image will **not** include this component. Build this fork and replace only the Wiki application image, preserving the existing database configuration and persistent volumes.
 
-For an isolated release checkout, set the inherited package's development flag to false before building:
+For an isolated release checkout, the Dockerfile sets production mode during the build:
 
 ```sh
 git clone --branch main https://github.com/zhenmunse/wiki.git agroverse-wiki-release
 cd agroverse-wiki-release
-node -e "const fs = require('fs'); const p = require('./package.json'); p.dev = false; fs.writeFileSync('package.json', JSON.stringify(p, null, 2) + '\n')"
 docker build -f dev/build/Dockerfile -t agroverse-wiki:local .
 ```
 
-Build on the target architecture, or explicitly use a matching Docker Buildx platform. The inherited Dockerfile uses Node 24. This command is a deployment recipe, not a claim that a complete release build has been validated for every platform.
+Build on the target architecture, or explicitly use a matching Docker Buildx platform. The Dockerfile uses Node 24, installs from the checked-in Yarn lockfile, and skips the unused Cypress binary in the release image build. Set `--build-arg WIKI_VERSION=...` when pinning release metadata. This command is a deployment recipe, not a claim that a complete release build has been validated for every platform.
 
 The inherited Build + Publish and Helm publication workflows are guarded to run only in `requarks/wiki`, because their destinations and credentials belong to upstream. **A merge in this fork does not automatically publish a fork image.** Configure a separate fork-owned image workflow before relying on automated releases.
 

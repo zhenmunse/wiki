@@ -7,13 +7,19 @@ RUN apk add yarn g++ make cmake python3 --no-cache
 
 WORKDIR /wiki
 
+ARG WIKI_VERSION
+ENV CYPRESS_INSTALL_BINARY=0
+
 COPY ./client ./client
 COPY ./dev ./dev
 COPY ./patches ./patches
 COPY ./package.json ./package.json
+COPY ./yarn.lock ./yarn.lock
 COPY ./.babelrc ./.babelrc
 COPY ./.eslintignore ./.eslintignore
 COPY ./.eslintrc.yml ./.eslintrc.yml
+
+RUN node -e "const fs=require('fs'); const p=require('./package.json'); p.dev=false; if(process.env.WIKI_VERSION) p.version=process.env.WIKI_VERSION; fs.writeFileSync('package.json', JSON.stringify(p,null,2))"
 
 RUN yarn cache clean
 RUN yarn --frozen-lockfile --non-interactive
@@ -41,7 +47,7 @@ COPY --chown=node:node --from=assets /wiki/node_modules ./node_modules
 COPY --chown=node:node ./server ./server
 COPY --chown=node:node --from=assets /wiki/server/views ./server/views
 COPY --chown=node:node ./dev/build/config.yml ./config.yml
-COPY --chown=node:node ./package.json ./package.json
+COPY --chown=node:node --from=assets /wiki/package.json ./package.json
 COPY --chown=node:node ./LICENSE ./LICENSE
 
 USER node

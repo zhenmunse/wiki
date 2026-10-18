@@ -39,9 +39,17 @@ export default {
     company: get('site/company'),
     contentLicense: get('site/contentLicense'),
     footerOverride: get('site/footerOverride'),
+    pageLocale: get('page/locale'),
     footerOverrideRender () {
       if (!this.footerOverride) { return '' }
-      return md.renderInline(this.footerOverride)
+      // Agroverse: "中文 || English" — show only the part matching the current page locale.
+      // Without "||" the whole text is shown, same as upstream.
+      const separator = this.footerOverride.indexOf('||')
+      if (separator < 0) { return md.renderInline(this.footerOverride) }
+      const parts = [this.footerOverride.slice(0, separator).trim(), this.footerOverride.slice(separator + 2).trim()]
+      const isZh = (this.pageLocale || '').toLowerCase().startsWith('zh')
+      const text = (isZh ? parts[0] : parts[1]) || parts[0] || parts[1]
+      return md.renderInline(text)
     },
     bgColor() {
       if (!this.$vuetify.theme.dark) {
