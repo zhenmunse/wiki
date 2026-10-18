@@ -11,6 +11,8 @@ on:
 
 jobs:
   build:
+    # Inherited publication targets belong to upstream, not to this fork.
+    if: github.repository == 'requarks/wiki'
     name: Update Chart
     runs-on: ubuntu-latest
 
