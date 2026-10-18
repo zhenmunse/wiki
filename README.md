@@ -1,527 +1,110 @@
-<div align="center">
+# Agroverse Wiki
 
-<picture>
-  <source media="(prefers-color-scheme: dark)" srcset="https://static.requarks.io/logo/wikijs-full-darktheme.svg">
-  <img alt="Wiki.js" src="https://static.requarks.io/logo/wikijs-full.svg" width="600">
-</picture>
+An independently maintained [Wiki.js](https://github.com/requarks/wiki) fork for the **UC Davis Unofficial Wiki**. This README describes additions in this fork and how to use them. The inherited project README is preserved in [README.upstream.md](README.upstream.md); licensing and upstream credits remain unchanged.
 
-[![Release](https://img.shields.io/github/release/Requarks/wiki.svg?style=flat&maxAge=3600)](https://github.com/Requarks/wiki/releases)
-[![License](https://img.shields.io/badge/license-AGPLv3-blue.svg?style=flat)](https://github.com/requarks/wiki/blob/master/LICENSE)
-[![Standard - JavaScript Style Guide](https://img.shields.io/badge/code%20style-standard-green.svg?style=flat&logo=javascript&logoColor=white)](http://standardjs.com/)
-[![Build + Publish](https://github.com/Requarks/wiki/actions/workflows/build.yml/badge.svg)](https://github.com/Requarks/wiki/actions/workflows/build.yml)  
-[![GitHub Sponsors](https://img.shields.io/github/sponsors/ngpixel?logo=github&color=ea4aaa)](https://github.com/users/NGPixel/sponsorship)
-[![Open Collective backers and sponsors](https://img.shields.io/opencollective/all/wikijs?label=backers&color=218bff&logo=opencollective&logoColor=white)](https://opencollective.com/wikijs)
-[![Downloads](https://img.shields.io/github/downloads/Requarks/wiki/total.svg?style=flat&logo=github)](https://github.com/Requarks/wiki/releases)
-[![Docker Pulls](https://img.shields.io/docker/pulls/requarks/wiki.svg?logo=docker&logoColor=white)](https://hub.docker.com/r/requarks/wiki/)  
-[![Chat on Discord](https://img.shields.io/badge/discord-join-8D96F6.svg?style=flat&logo=discord&logoColor=white)](https://discord.gg/rcxt9QS2jd)
-[![Follow on Bluesky](https://img.shields.io/badge/bluesky-%40js.wiki-blue.svg?style=flat&logo=bluesky&logoColor=white)](https://bsky.app/profile/js.wiki)
-[![Follow on Telegram](https://img.shields.io/badge/telegram-%40wiki__js-blue.svg?style=flat&logo=telegram)](https://t.me/wiki_js)
-[![Reddit](https://img.shields.io/badge/reddit-%2Fr%2Fwikijs-orange?logo=reddit&logoColor=white)](https://www.reddit.com/r/wikijs/)
+## What this fork adds
 
-##### A modern, lightweight and powerful wiki app built on NodeJS
+### Native Aggie Bites homepage section
 
-</div>
+The `home` page includes a Vue/Vuetify dining section backed by the independent Aggie Bites menu service:
 
-- **[Official Website](https://js.wiki/)**
-- **[Documentation](https://docs.requarks.io/)**
-- [Requirements](https://docs.requarks.io/install/requirements)
-- [Installation](https://docs.requarks.io/install)
-- [Demo](https://docs.requarks.io/demo)
-- [Changelog](https://github.com/requarks/wiki/releases)
-- [Feature Requests](https://feedback.js.wiki/wiki)
-- Chat with us on [Discord](https://discord.gg/rcxt9QS2jd)
-- [Translations](https://docs.requarks.io/dev/translations) *(We need your help!)*
-- [Special Thanks](#special-thanks)
-- [Contribute](#contributors)
+- Switch between Cuarto, Segundo, Tercero and Latitude, and choose the current/next meal or breakfast, lunch and dinner.
+- Follow the Wiki page language: Chinese pages show translated names with the English originals; English pages show the originals. AI-translated names are marked on Chinese pages.
+- Show the dining-zone name and color beside each highlighted dish, with colors adapted to the Wiki's dark theme.
+- Display an AI-written meal summary when available. Rule-generated summaries are omitted because they repeat the dish list.
+- Open a dish's details or the complete menu on the menu site.
+- Show unavailable-menu and closure states. If the API fails or times out after five seconds, show a short message and a link to the menu site.
 
-[Follow our Twitter feed](https://twitter.com/requarks) to learn about upcoming updates and new releases!
+The component follows Vue's lifecycle, cancels obsolete requests, and prevents older responses from overwriting a newer selection. It inherits the Wiki's typography, surfaces and theme instead of embedding a separate page.
 
-<h2 align="center">Donate</h2>
+**No iframe, theme code injection, page-body rewriting, or menu commits to Git sync are involved.** Only component code lives in this repository. Menu data, translations, model calls, snapshots, administration and Bot delivery belong to the separate Aggie Bites service. A Wiki outage does not stop that service's worker or Bot.
 
-<div align="center">
+## Using the homepage section
 
-Wiki.js is an open source project that has been made possible due to the generous contributions by community [backers](https://js.wiki/about). If you are interested in supporting this project, please consider [becoming a sponsor](https://github.com/users/NGPixel/sponsorship), [becoming a patron](https://www.patreon.com/requarks), donating to our [OpenCollective](https://opencollective.com/wikijs), via [Paypal](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=FLV5X255Z9CJU&source=url) or via Ethereum (`0xe1d55c19ae86f6bcbfb17e7f06ace96bdbb22cb5`).
-  
-  [![Become a Sponsor](https://img.shields.io/badge/donate-github-ea4aaa.svg?style=popout&logo=github)](https://github.com/users/NGPixel/sponsorship)
-  [![Become a Patron](https://img.shields.io/badge/donate-patreon-orange.svg?style=popout&logo=patreon)](https://www.patreon.com/requarks)
-  [![Donate on OpenCollective](https://img.shields.io/badge/donate-open%20collective-blue.svg?style=popout&logo=data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz48c3ZnIHdpZHRoPSIyNTZweCIgaGVpZ2h0PSIyNTZweCIgdmlld0JveD0iMCAwIDI1NiAyNTYiIHZlcnNpb249IjEuMSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4bWxuczp4bGluaz0iaHR0cDovL3d3dy53My5vcmcvMTk5OS94bGluayIgcHJlc2VydmVBc3BlY3RSYXRpbz0ieE1pZFlNaWQiPjxnPjxwYXRoIGQ9Ik0yMDkuNzY1MTQ0LDEyOC4xNDk5NzkgQzIwOS43NjUxNDQsMTQ0LjE2MzMgMjA0Ljg2NDM4MSwxNTkuNDg5ODkgMTk2LjQ5ODc0NywxNzIuNzI1MDcyIEwyMjkuOTQ1Njc1LDIwNi4xNzE5OTkgQzI0Ni42ODIxMDUsMTgzLjg1Njc1OSAyNTUuNzI5MzA3LDE1Ni43MTUxNTIgMjU1LjcyOTMwNywxMjguODIxMTAyIEMyNTUuNzI5MzA3LDk5LjU1Njk5MTcgMjQ1Ljk3NDYwMyw3My4wNzEwMjA3IDIyOS4yNTg5NDQsNTEuNDg1ODEyOCBMMTk2LjQ4MzE0LDg0LjIxNDc5NCBDMjA1LjEyMjU2MSw5Ny4yMjI0NjgzIDIwOS43MzY5MDcsMTEyLjQ4NzgxIDIwOS43NDk1MzcsMTI4LjEwMzE1NiBMMjA5Ljc2NTE0NCwxMjguMTQ5OTc5IFoiIGZpbGw9IiNCOEQzRjQiPjwvcGF0aD48cGF0aCBkPSJNMTI3LjUxMzQ4NCwyMTAuMzU0ODE2IEM4Mi4xNDYwODcyLDIxMC4yNjg5NTggNDUuMzg3NTA5NCwxNzMuNTE3MzU4IDQ1LjI5MzAzOTMsMTI4LjE0OTk3OSBDNDUuMzYxNzUwMiw4Mi43NjQzMTM4IDgyLjEyNzg0ODcsNDUuOTg0MjU3IDEyNy41MTM0ODQsNDUuODk4MzE4NiBDMTQ0LjI0NDc1Miw0NS44OTgzMTg2IDE1OS41NzEzNDIsNTAuNzk5MDgxNyAxNzIuMTE5NzkyLDU5LjE2NDcxNTQgTDIwNC44NjQzODEsMjYuMzg4OTExNiBDMTgyLjU0MzY1LDkuNjY2NjUxMjkgMTU1LjQwMzQyOSwwLjYzMDg2MzI5OCAxMjcuNTEzNDg0LDAuNjM2NDk0NDAzIEM1Ny4xMjM1NDM3LDAuNjM2NDk0NDAzIDAsNTcuNzYwMDM4MSAwLDEyOC4xNDk5NzkgQzAsMTk4LjUwODcwNCA1Ny4xMjM1NDM3LDI1NS42NjM0NjMgMTI3LjUxMzQ4NCwyNTUuNjYzNDYzIEMxNTUuNTM3MzUyLDI1NS43NDA4NzYgMTgyLjc3NTk4OSwyNDYuNDA4NTEgMjA0Ljg2NDM4MSwyMjkuMTYxODg0IEwxNzEuNDE3NDU0LDE5NS43MzA1NjQgQzE1OS41NTU3MzQsMjA1LjQ4NTI2OCAxNDQuMjYwMzU5LDIxMC4zNTQ4MTYgMTI3LjUxMzQ4NCwyMTAuMzU0ODE2IEwxMjcuNTEzNDg0LDIxMC4zNTQ4MTYgWiIgZmlsbD0iIzdGQURGMiI+PC9wYXRoPjwvZz48L3N2Zz4=)](https://opencollective.com/wikijs)
-  [![Donate via Paypal](https://img.shields.io/badge/donate-paypal-blue.svg?style=popout&logo=paypal)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=FLV5X255Z9CJU&source=url)  
-  [![Donate via Ethereum](https://img.shields.io/badge/donate-ethereum-999.svg?style=popout&logo=ethereum&logoColor=CCC)](https://etherscan.io/address/0xe1d55c19ae86f6bcbfb17e7f06ace96bdbb22cb5)
-  [![Donate via Bitcoin](https://img.shields.io/badge/donate-bitcoin-ff9900.svg?style=popout&logo=bitcoin&logoColor=CCC)](https://checkout.opennode.com/p/2553c612-f863-4407-82b3-1a7685268747)
-  [![Buy a T-Shirt](https://img.shields.io/badge/buy-t--shirts-teal.svg?style=popout&logo=data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHg9IjBweCIgeT0iMHB4Igp3aWR0aD0iMjQiIGhlaWdodD0iMjQiCnZpZXdCb3g9IjAgMCAxOTIgMTkyIgpzdHlsZT0iIGZpbGw6IzAwMDAwMDsiPjxnIGZpbGw9Im5vbmUiIGZpbGwtcnVsZT0ibm9uemVybyIgc3Ryb2tlPSJub25lIiBzdHJva2Utd2lkdGg9IjEiIHN0cm9rZS1saW5lY2FwPSJidXR0IiBzdHJva2UtbGluZWpvaW49Im1pdGVyIiBzdHJva2UtbWl0ZXJsaW1pdD0iMTAiIHN0cm9rZS1kYXNoYXJyYXk9IiIgc3Ryb2tlLWRhc2hvZmZzZXQ9IjAiIGZvbnQtZmFtaWx5PSJub25lIiBmb250LXdlaWdodD0ibm9uZSIgZm9udC1zaXplPSJub25lIiB0ZXh0LWFuY2hvcj0ibm9uZSIgc3R5bGU9Im1peC1ibGVuZC1tb2RlOiBub3JtYWwiPjxwYXRoIGQ9Ik0wLDE5MnYtMTkyaDE5MnYxOTJ6IiBmaWxsPSJub25lIj48L3BhdGg+PGcgZmlsbD0iIzFhYmM5YyI+PGcgaWQ9InN1cmZhY2UxIj48cGF0aCBkPSJNOTYsMGMtMTUuMjE4NzUsMCAtMjQuNjg3NSwzLjY1NjI1IC0yNS41LDRsLTIyLjUsNy4yNWMtMTAuNDA2MjUsMy4xODc1IC0xOS4wOTM3NSw5LjQzNzUgLTI1LjUsMTguMjVsLTIyLjUsNDIuNWwyNy4yNSwxNi43NWwxMi43NSwtMjR2MTE5LjI1YzAsNC40MDYyNSAyNS4wNjI1LDggNTYsOGMzMC45Mzc1LDAgNTYsLTMuNTkzNzUgNTYsLTh2LTExOS4yNWwxMi43NSwyNGwyNy4yNSwtMTYuNzVsLTIyLjUsLTQyLjVjLTYuNDA2MjUsLTguODEyNSAtMTUuMTU2MjUsLTE1LjA2MjUgLTI0Ljc1LC0xOC4yNWwtMjIuMjUsLTcuMjVjLTAuMTg3NSwwIC0xLjAzMTI1LDEuMzEyNSAtMiwyLjc1bDEuMjUsLTIuNWMwLDAgLTkuODQzNzUsLTQuMjUgLTI1Ljc1LC00LjI1ek05Niw4YzExLjQwNjI1LDAgMTguNDM3NSwyLjI1IDIxLDMuMjVjLTQuNDY4NzUsNS43NSAtMTEuNDA2MjUsMTIuNzUgLTIxLDEyLjc1Yy05LjQwNjI1LDAgLTE2LjQwNjI1LC03LjA2MjUgLTIwLjc1LC0xMi43NWMyLjg3NSwtMS4wNjI1IDkuODc1LC0zLjI1IDIwLjc1LC0zLjI1eiI+PC9wYXRoPjwvZz48L2c+PC9nPjwvc3ZnPg==)](https://wikijs.threadless.com)
+1. Open the Wiki's `home` page, for example `/zh/home` or `/en/home`.
+2. Choose a dining hall and meal. The displayed date comes from the service's Davis-time schedule.
+3. Use the colored zone label to locate the serving station. Select a dish for its next scheduled appearances, or **Full menu** for the complete daily menu.
+4. Use the Wiki's normal language and theme controls. The dining section updates with them.
 
-</div>
+The component is mounted only when the page path is `home`; it is not automatically inserted into arbitrary pages named `index` or `welcome`. Site operators can change that condition in [page.vue](client/themes/default/components/page.vue). The section is placed above the existing page content and does not modify that content.
 
-<h2 align="center">Gold Tier Sponsors</h2>
+## Operator setup
 
-<div align="center">
-<table>
-  <tbody>
-    <tr>
-      <td align="center" valign="middle" width="444">
-        <a href="https://trans-zero.com/" target="_blank">
-          <img src="https://cdn.js.wiki/images/sponsors/transzero.png">
-        </a>
-      </td>
-    </tr>
-  </tbody>
-</table>
-</div>
+### 1. Run Aggie Bites independently
 
-<h2 align="center">GitHub Sponsors</h2>
+Deploy its API and single worker using that service's deployment guide. The default menu-site links in this component point to `https://menu.ucdavis.top`. Change `menuLink` in [aggie-bites.vue](client/themes/default/components/aggie-bites.vue) when using another hostname.
 
-Support this project by becoming a sponsor. Your name will show up in the Contribute page of all Wiki.js installations as well as here with a link to your website! [[Become a sponsor](https://github.com/users/NGPixel/sponsorship)]
+Do not put model keys, Bot tokens or menu-service administrator credentials into the Wiki component. It consumes only a public, read-only API.
 
-<div align="center">
-<table>
-  <tbody>
-    <tr>
-      <td align="center" valign="middle" width="444">
-        <a href="https://www.stellarhosted.com/" target="_blank">
-          <img src="https://cdn.js.wiki/images/sponsors/stellarhosted.png">
-        </a>
-      </td>
-    </tr>
-  </tbody>
-</table>
-</div>
+### 2. Connect the same-origin API route
 
-<div align="center">
-<table>
-  <tbody>
-    <tr>
-      <td align="center" valign="middle" width="130">
-        <a href="https://acceleanation.com/" target="_blank">
-          <img src="https://avatars.githubusercontent.com/u/41210718?s=200&v=4">
-        </a>
-      </td>
-      <td align="center" valign="middle" width="130">
-        <a href="https://github.com/alexksso" target="_blank">
-          Alexander Casassovici<br />(@alexksso)
-        </a>
-      </td>
-      <td align="center" valign="middle" width="130">
-        <a href="https://github.com/broxen" target="_blank">
-          Broxen<br />(@broxen)
-        </a>
-      </td>
-      <td align="center" valign="middle" width="130">
-        <a href="https://github.com/xDacon" target="_blank">
-          Dacon<br />(@xDacon)
-        </a>
-      </td>
-      <td align="center" valign="middle" width="130">
-        <a href="https://github.com/DonNabla" target="_blank">
-          Maxime Pierre<br />(@DonNabla)
-        </a>
-      </td>
-      <td align="center" valign="middle" width="130">
-        <a href="https://github.com/GigabiteLabs" target="_blank">
-          <img src="https://static.requarks.io/sponsors/gigabitelabs-148x129.png">
-        </a>
-      </td>
-      <td align="center" valign="middle" width="130">
-        <a href="https://www.hostwiki.com/" target="_blank">
-          <img src="https://cdn.js.wiki/images/sponsors/hostwiki.png">
-        </a>
-      </td>
-    </tr>
-    <tr>
-      <td align="center" valign="middle" width="130">
-        <a href="https://github.com/JayDaley" target="_blank">
-          Jay Daley<br />(@JayDaley)
-        </a>
-      </td>
-      <td align="center" valign="middle" width="130">
-        <a href="https://github.com/idokka" target="_blank">
-          Oleksii<br />(@idokka)
-        </a>
-      </td>
-      <td align="center" valign="middle" width="130">
-        <a href="https://www.openhost-network.com/" target="_blank">
-          <img src="https://avatars.githubusercontent.com/u/114218287?s=200&v=4">
-        </a>
-      </td>
-      <td align="center" valign="middle" width="130">
-        <a href="https://www.prevo.ch/" target="_blank">
-          <img src="https://avatars.githubusercontent.com/u/114394792?v=4">
-        </a>
-      </td>
-      <td align="center" valign="middle" width="130">
-        <a href="https://github.com/shanekearney" target="_blank">
-          Shane Kearney<br />(@shanekearney)
-        </a>
-      </td>
-      <td align="center" valign="middle" width="130">
-        <a href="http://www.taicep.org/" target="_blank">
-          <img src="https://avatars.githubusercontent.com/u/160072306?v=4">
-        </a>
-      </td>
-      <td align="center" valign="middle" width="130"></td>
-    </tr>
-  </tbody>
-</table>
+The component fetches `/bites-api/today`. Add the following **inside the existing HTTPS server block for the Wiki hostname**. This example assumes Nginx and `bites-api` share a Docker network:
 
-<table><tbody><tr><td>
-<img width="441" height="1" />
+```nginx
+resolver 127.0.0.11 valid=30s ipv6=off;
 
-- Akira Suenami ([@a-suenami](https://github.com/a-suenami))
-- Armin Reiter ([@arminreiter](https://github.com/arminreiter))
-- Arnaud Marchand ([@snuids](https://github.com/snuids))
-- Brian Douglass ([@bhdouglass](https://github.com/bhdouglass))
-- Bryon Vandiver ([@asterick](https://github.com/asterick))
-- Cameron Steele ([@ATechAdventurer](https://github.com/ATechAdventurer))
-- Charlie Schliesser ([@charlie-s](https://github.com/charlie-s))
-- Cloud Data Hosting LLC ([@CloudDataHostingLLC](https://github.com/CloudDataHostingLLC))
-- Cole Manning ([@RVRX](https://github.com/RVRX))
-- CrazyMarvin ([@CrazyMarvin](https://github.com/CrazyMarvin))
-- Daniel Horner ([@danhorner](https://github.com/danhorner))
-- David Christian Holin ([@SirGibihm](https://github.com/SirGibihm))
-- Dragan Espenschied ([@despens](https://github.com/despens))
-- Elijah Zobenko ([@he110](https://github.com/he110))
-- Emerson-Perna ([@Emerson-Perna](https://github.com/Emerson-Perna))
-- Ernie ([@iamernie](https://github.com/iamernie))
-- Fabio Ferrari ([@devxops](https://github.com/devxops))
-- Finsa S.p.A. ([@finsaspa](https://github.com/finsaspa))
-- Florian Moss ([@florianmoss](https://github.com/florianmoss))
-- GoodCorporateCitizen ([@GoodCorporateCitizen](https://github.com/GoodCorporateCitizen))
-- HeavenBay ([@HeavenBay](https://github.com/heavenbay))
-- HikaruEgashira ([@HikaruEgashira](https://github.com/HikaruEgashira))
-- Ian Hyzy ([@ianhyzy](https://github.com/ianhyzy))
-- Jaimyn Mayer ([@jabelone](https://github.com/jabelone))
-- Jay Lee ([@polyglotm](https://github.com/polyglotm))
-- Kelly Wardrop ([@dropcoded](https://github.com/dropcoded))
-- Loki ([@binaryloki](https://github.com/binaryloki))
-- MaFarine ([@MaFarine](https://github.com/MaFarine))
-- Marcilio Leite Neto ([@marclneto](https://github.com/marclneto))
-- Mattias Johnson ([@mattiasJohnson](https://github.com/mattiasJohnson))
-- Max Ricketts-Uy ([@MaxRickettsUy](https://github.com/MaxRickettsUy))
-- Mickael Asseline ([@PAPAMICA](https://github.com/PAPAMICA))
-- Mitchell Rowton ([@mrowton](https://github.com/mrowton))
-        
-</td><td>
-<img width="441" height="1" />
+location /bites-api/ {
+    set $bites_upstream bites-api:8000;
+    rewrite ^/bites-api/(.*)$ /api/v1/$1 break;
+    proxy_pass http://$bites_upstream;
+    proxy_connect_timeout 2s;
+    proxy_read_timeout 5s;
+    proxy_set_header Host menu.ucdavis.top;
+}
+```
 
-- M. Scott Ford ([@mscottford](https://github.com/mscottford))
-- Nick Halase ([@nhalase](https://github.com/nhalase))
-- Nick Price ([@DominoTree](https://github.com/DominoTree))
-- Nina Reynolds ([@cutecycle](https://github.com/cutecycle))
-- Noel Cower ([@nilium](https://github.com/nilium))
-- Oleksandr Koltsov ([@crambo](https://github.com/crambo))
-- Phi Zeroth ([@phizeroth](https://github.com/phizeroth))
-- Philipp Schmitt ([@pschmitt](https://github.com/pschmitt))
-- Robert Lanzke ([@winkelement](https://github.com/winkelement))
-- Ruizhe Li ([@liruizhe1995](https://github.com/liruizhe1995))
-- Sam Martin ([@ABitMoreDepth](https://github.com/ABitMoreDepth))
-- Sean Coffey ([@seanecoffey](https://github.com/seanecoffey))
-- Simon Ott ([@ottsimon](https://github.com/ottsimon))
-- Stephan Kristyn ([@stevek-pro](https://github.com/stevek-pro))
-- Theodore Chu ([@TheodoreChu](https://github.com/TheodoreChu))
-- Tim Elmer ([@tim-elmer](https://github.com/tim-elmer))
-- Tyler Denman ([@tylerguy](https://github.com/tylerguy))
-- Victor Bilgin ([@vbilgin](https://github.com/vbilgin))
-- VMO Solutions ([@vmosolutions](https://github.com/vmosolutions))
-- YazMogg35 ([@YazMogg35](https://github.com/YazMogg35))
-- Yu Yongwoo ([@uyu423](https://github.com/uyu423))
-- ameyrakheja ([@ameyrakheja](https://github.com/ameyrakheja))
-- aniketpanjwani ([@aniketpanjwani](https://github.com/aniketpanjwani))
-- aytaa ([@aytaa](https://github.com/aytaa))
-- cesar ([@cesarnr21](https://github.com/cesarnr21))
-- chaee ([@chaee](https://github.com/chaee))
-- lwileczek ([@lwileczek](https://github.com/lwileczek))
-- magicpotato ([@fortheday](https://github.com/fortheday))
-- motoacs ([@motoacs](https://github.com/motoacs))
-- muzian666 ([@muzian666](https://github.com/muzian666))
-- rburckner ([@rburckner](https://github.com/rburckner))
-- scorpion ([@scorpion](https://github.com/scorpion))
-- valantien ([@valantien](https://github.com/valantien))
-        
-</td></tr></tbody></table>
-</div>
+Validate with `nginx -t` before reloading Nginx. Reuse an existing resolver directive if the server block already has one. Docker's resolver address is specific to this example; use the correct resolver and backend address outside Docker.
 
-<h2 align="center">OpenCollective Sponsors</h2>
+Dynamic upstream resolution allows Nginx to start even if the menu container is unavailable. Same-origin routing avoids browser CORS configuration. If the Wiki is gated by an authentication proxy, ensure this public API path can be fetched without credentials; the component uses `credentials: 'omit'`.
 
-Support this project by becoming a sponsor. Your logo will show up in the Contribute page of all Wiki.js installations as well as here with a link to your website! [[Become a sponsor](https://opencollective.com/wikijs#sponsor)]
+### 3. Deploy this fork's frontend
 
-<div align="center">
-<table>
-  <tbody>
-    <tr>
-      <td align="center" valign="middle">
-        <a href="https://opencollective.com/wikijs/sponsor/0/website" target="_blank"><img src="https://opencollective.com/wikijs/sponsor/0/avatar.svg"></a>
-      </td>
-      <td align="center" valign="middle">
-        <a href="https://opencollective.com/wikijs/sponsor/1/website" target="_blank"><img src="https://opencollective.com/wikijs/sponsor/1/avatar.svg"></a>
-      </td>
-      <td align="center" valign="middle">
-        <a href="https://opencollective.com/wikijs/sponsor/2/website" target="_blank"><img src="https://opencollective.com/wikijs/sponsor/2/avatar.svg"></a>
-      </td>
-      <td align="center" valign="middle">
-        <a href="https://opencollective.com/wikijs/sponsor/3/website" target="_blank"><img src="https://opencollective.com/wikijs/sponsor/3/avatar.svg"></a>
-      </td>
-      <td align="center" valign="middle">
-        <a href="https://opencollective.com/wikijs/sponsor/4/website" target="_blank"><img src="https://opencollective.com/wikijs/sponsor/4/avatar.svg"></a>
-      </td>
-    </tr>
-    <tr>
-      <td align="center" valign="middle">
-        <a href="https://opencollective.com/wikijs/sponsor/5/website" target="_blank"><img src="https://opencollective.com/wikijs/sponsor/5/avatar.svg"></a>
-      </td>
-      <td align="center" valign="middle">
-        <a href="https://opencollective.com/wikijs/sponsor/6/website" target="_blank"><img src="https://opencollective.com/wikijs/sponsor/6/avatar.svg"></a>
-      </td>
-      <td align="center" valign="middle">
-        <a href="https://opencollective.com/wikijs/sponsor/7/website" target="_blank"><img src="https://opencollective.com/wikijs/sponsor/7/avatar.svg"></a>
-      </td>
-      <td align="center" valign="middle">
-        <a href="https://opencollective.com/wikijs/sponsor/8/website" target="_blank"><img src="https://opencollective.com/wikijs/sponsor/8/avatar.svg"></a>
-      </td>
-      <td align="center" valign="middle">
-        <a href="https://opencollective.com/wikijs/sponsor/9/website" target="_blank"><img src="https://opencollective.com/wikijs/sponsor/9/avatar.svg"></a>
-      </td>
-    </tr>
-    <tr>
-      <td align="center" valign="middle">
-        <a href="https://opencollective.com/wikijs/sponsor/10/website" target="_blank"><img src="https://opencollective.com/wikijs/sponsor/10/avatar.svg"></a>
-      </td>
-      <td align="center" valign="middle">
-        <a href="https://opencollective.com/wikijs/sponsor/11/website" target="_blank"><img src="https://opencollective.com/wikijs/sponsor/11/avatar.svg"></a>
-      </td>
-      <td align="center" valign="middle">
-        <a href="https://opencollective.com/wikijs/sponsor/12/website" target="_blank"><img src="https://opencollective.com/wikijs/sponsor/12/avatar.svg"></a>
-      </td>
-      <td align="center" valign="middle">
-        <a href="https://opencollective.com/wikijs/sponsor/13/website" target="_blank"><img src="https://opencollective.com/wikijs/sponsor/13/avatar.svg"></a>
-      </td>
-      <td align="center" valign="middle">
-        <a href="https://opencollective.com/wikijs/sponsor/14/website" target="_blank"><img src="https://opencollective.com/wikijs/sponsor/14/avatar.svg"></a>
-      </td>
-    </tr>
-    <tr>
-      <td align="center" valign="middle">
-        <a href="https://opencollective.com/wikijs/sponsor/15/website" target="_blank"><img src="https://opencollective.com/wikijs/sponsor/15/avatar.svg"></a>
-      </td>
-      <td align="center" valign="middle">
-        <a href="https://opencollective.com/wikijs/sponsor/16/website" target="_blank"><img src="https://opencollective.com/wikijs/sponsor/16/avatar.svg"></a>
-      </td>
-      <td align="center" valign="middle">
-        <a href="https://opencollective.com/wikijs/sponsor/17/website" target="_blank"><img src="https://opencollective.com/wikijs/sponsor/17/avatar.svg"></a>
-      </td>
-      <td align="center" valign="middle">
-        <a href="https://opencollective.com/wikijs/sponsor/18/website" target="_blank"><img src="https://opencollective.com/wikijs/sponsor/18/avatar.svg"></a>
-      </td>
-      <td align="center" valign="middle">
-        <a href="https://opencollective.com/wikijs/sponsor/19/website" target="_blank"><img src="https://opencollective.com/wikijs/sponsor/19/avatar.svg"></a>
-      </td>
-    </tr>
-    <tr>
-      <td align="center" valign="middle">
-        <a href="https://opencollective.com/wikijs/sponsor/20/website" target="_blank"><img src="https://opencollective.com/wikijs/sponsor/20/avatar.svg"></a>
-      </td>
-      <td align="center" valign="middle">
-        <a href="https://opencollective.com/wikijs/sponsor/21/website" target="_blank"><img src="https://opencollective.com/wikijs/sponsor/21/avatar.svg"></a>
-      </td>
-      <td align="center" valign="middle">
-        <a href="https://opencollective.com/wikijs/sponsor/22/website" target="_blank"><img src="https://opencollective.com/wikijs/sponsor/22/avatar.svg"></a>
-      </td>
-      <td align="center" valign="middle">
-        <a href="https://opencollective.com/wikijs/sponsor/23/website" target="_blank"><img src="https://opencollective.com/wikijs/sponsor/23/avatar.svg"></a>
-      </td>
-      <td align="center" valign="middle">
-        <a href="https://opencollective.com/wikijs/sponsor/24/website" target="_blank"><img src="https://opencollective.com/wikijs/sponsor/24/avatar.svg"></a>
-      </td>
-    </tr>
-    <tr>
-      <td align="center" valign="middle">
-        <a href="https://opencollective.com/wikijs/sponsor/25/website" target="_blank"><img src="https://opencollective.com/wikijs/sponsor/25/avatar.svg"></a>
-      </td>
-      <td align="center" valign="middle">
-        <a href="https://opencollective.com/wikijs/sponsor/26/website" target="_blank"><img src="https://opencollective.com/wikijs/sponsor/26/avatar.svg"></a>
-      </td>
-      <td align="center" valign="middle">
-        <a href="https://opencollective.com/wikijs/sponsor/27/website" target="_blank"><img src="https://opencollective.com/wikijs/sponsor/27/avatar.svg"></a>
-      </td>
-      <td align="center" valign="middle">
-        <a href="https://opencollective.com/wikijs/sponsor/28/website" target="_blank"><img src="https://opencollective.com/wikijs/sponsor/28/avatar.svg"></a>
-      </td>
-      <td align="center" valign="middle">
-        <a href="https://opencollective.com/wikijs/sponsor/29/website" target="_blank"><img src="https://opencollective.com/wikijs/sponsor/29/avatar.svg"></a>
-      </td>
-    </tr>
-    <tr>
-      <td align="center" valign="middle">
-        <a href="https://opencollective.com/wikijs/sponsor/30/website" target="_blank"><img src="https://opencollective.com/wikijs/sponsor/30/avatar.svg"></a>
-      </td>
-      <td align="center" valign="middle">
-        <a href="https://opencollective.com/wikijs/sponsor/31/website" target="_blank"><img src="https://opencollective.com/wikijs/sponsor/31/avatar.svg"></a>
-      </td>
-      <td align="center" valign="middle">
-        <a href="https://opencollective.com/wikijs/sponsor/32/website" target="_blank"><img src="https://opencollective.com/wikijs/sponsor/32/avatar.svg"></a>
-      </td>
-      <td align="center" valign="middle">
-        <a href="https://opencollective.com/wikijs/sponsor/33/website" target="_blank"><img src="https://opencollective.com/wikijs/sponsor/33/avatar.svg"></a>
-      </td>
-      <td align="center" valign="middle">
-        <a href="https://opencollective.com/wikijs/sponsor/34/website" target="_blank"><img src="https://opencollective.com/wikijs/sponsor/34/avatar.svg"></a>
-      </td>
-    </tr>
-    <tr>
-      <td align="center" valign="middle">
-        <a href="https://opencollective.com/wikijs/sponsor/35/website" target="_blank"><img src="https://opencollective.com/wikijs/sponsor/35/avatar.svg"></a>
-      </td>
-      <td align="center" valign="middle">
-        <a href="https://opencollective.com/wikijs/sponsor/36/website" target="_blank"><img src="https://opencollective.com/wikijs/sponsor/36/avatar.svg"></a>
-      </td>
-      <td align="center" valign="middle">
-        <a href="https://opencollective.com/wikijs/sponsor/37/website" target="_blank"><img src="https://opencollective.com/wikijs/sponsor/37/avatar.svg"></a>
-      </td>
-      <td align="center" valign="middle">
-        <a href="https://opencollective.com/wikijs/sponsor/38/website" target="_blank"><img src="https://opencollective.com/wikijs/sponsor/38/avatar.svg"></a>
-      </td>
-      <td align="center" valign="middle">
-        <a href="https://opencollective.com/wikijs/sponsor/39/website" target="_blank"><img src="https://opencollective.com/wikijs/sponsor/39/avatar.svg"></a>
-      </td>
-    </tr>
-    <tr>
-      <td align="center" valign="middle">
-        <a href="https://opencollective.com/wikijs/sponsor/40/website" target="_blank"><img src="https://opencollective.com/wikijs/sponsor/40/avatar.svg"></a>
-      </td>
-      <td align="center" valign="middle">
-        <a href="https://opencollective.com/wikijs/sponsor/41/website" target="_blank"><img src="https://opencollective.com/wikijs/sponsor/41/avatar.svg"></a>
-      </td>
-      <td align="center" valign="middle">
-        <a href="https://opencollective.com/wikijs/sponsor/42/website" target="_blank"><img src="https://opencollective.com/wikijs/sponsor/42/avatar.svg"></a>
-      </td>
-      <td align="center" valign="middle">
-        <a href="https://opencollective.com/wikijs/sponsor/43/website" target="_blank"><img src="https://opencollective.com/wikijs/sponsor/43/avatar.svg"></a>
-      </td>
-      <td align="center" valign="middle">
-        <a href="https://opencollective.com/wikijs/sponsor/44/website" target="_blank"><img src="https://opencollective.com/wikijs/sponsor/44/avatar.svg"></a>
-      </td>
-    </tr>
-    <tr>
-      <td align="center" valign="middle">
-        <a href="https://opencollective.com/wikijs/sponsor/40/website" target="_blank"><img src="https://opencollective.com/wikijs/sponsor/45/avatar.svg"></a>
-      </td>
-      <td align="center" valign="middle">
-        <a href="https://opencollective.com/wikijs/sponsor/41/website" target="_blank"><img src="https://opencollective.com/wikijs/sponsor/46/avatar.svg"></a>
-      </td>
-      <td align="center" valign="middle">
-        <a href="https://opencollective.com/wikijs/sponsor/42/website" target="_blank"><img src="https://opencollective.com/wikijs/sponsor/47/avatar.svg"></a>
-      </td>
-      <td align="center" valign="middle">
-        <a href="https://opencollective.com/wikijs/sponsor/43/website" target="_blank"><img src="https://opencollective.com/wikijs/sponsor/48/avatar.svg"></a>
-      </td>
-      <td align="center" valign="middle">
-        <a href="https://opencollective.com/wikijs/sponsor/44/website" target="_blank"><img src="https://opencollective.com/wikijs/sponsor/49/avatar.svg"></a>
-      </td>
-    </tr>
-  </tbody>
-</table>
-</div>
+Running the unmodified `ghcr.io/requarks/wiki:2` image will **not** include this component. Build this fork and replace only the Wiki application image, preserving the existing database configuration and persistent volumes.
 
-<h2 align="center">Patreon Backers</h2>
+For an isolated release checkout, set the inherited package's development flag to false before building:
 
-Thank you to all our patrons! 🙏 [[Become a patron](https://www.patreon.com/requarks)]
+```sh
+git clone --branch main https://github.com/zhenmunse/wiki.git agroverse-wiki-release
+cd agroverse-wiki-release
+node -e "const fs = require('fs'); const p = require('./package.json'); p.dev = false; fs.writeFileSync('package.json', JSON.stringify(p, null, 2) + '\n')"
+docker build -f dev/build/Dockerfile -t agroverse-wiki:local .
+```
 
-<div align="center">
-<table><tbody><tr><td>
-<img width="441" height="1" />
+Build on the target architecture, or explicitly use a matching Docker Buildx platform. The inherited Dockerfile uses Node 24. This command is a deployment recipe, not a claim that a complete release build has been validated for every platform.
 
-- Aeternum
-- Al Romano
-- Alex Balabanov
-- Alex Milanov
-- Alex Zen
-- Arti Zirk
-- Ave
-- Brandon Curtis
-- Damien Hottelier
-- Daniel T. Holtzclaw
-- Dave 'Sri' Seah
-- djagoo
-- dz
-- Douglas Lassance
-- Ergoflix
-- Ernie Reid
-- Etienne
-- Flemis Jurgenheimer
-- Florent
-- Günter Pavlas
-- hong
-- Hope
-- Ian
-- Imari Childress
-- Iskander Callos
-  
-</td><td>
-<img width="441" height="1" />
+The inherited Build + Publish and Helm publication workflows are guarded to run only in `requarks/wiki`, because their destinations and credentials belong to upstream. **A merge in this fork does not automatically publish a fork image.** Configure a separate fork-owned image workflow before relying on automated releases.
 
-- Josh Stewart
-- Justin Dunsworth
-- Keir
-- Loïc CRAMPON
-- Ludgeir Ibanez
-- Lyn Matten
-- Mads Rosendahl
-- Mark Mansur
-- Matt Gedigian
-- Mike Ditton
-- Nate Figz
-- Patryk
-- Paul O'Fallon
-- Philipp Schürch
-- Tracey Duffy
-- Quaxim
-- Richeir
-- Sergio Navarro Fernández
-- Shad Narcher
-- ShadowVoyd
-- SmartNET.works
-- Stepan Sokolovskyi
-- Zach Crawford
-- Zach Maynard
-- 张白驹
+### 4. Verify the integration
 
-</td></tr></tbody></table>
-</div>
+- Open `/bites-api/today` on the Wiki hostname and confirm JSON with `schema_version: "1"`.
+- Open `/zh/home` and `/en/home`; confirm dining choices and language-specific names.
+- Switch the Wiki's theme; confirm zone colors remain visible.
+- Navigate away and return; confirm the section loads normally.
+- Simulate an unavailable API in a test environment; the rest of the page must remain usable and the menu-site link must appear.
 
-<h2 align="center">OpenCollective Backers</h2>
+## API compatibility
 
-Thank you to all our backers! 🙏 [[Become a backer](https://opencollective.com/wikijs#backer)]
+The section consumes the Aggie Bites `/api/v1/today` contract, optionally with `?meal=breakfast|lunch|dinner`. It expects the response date, meal, hall states, highlights and bilingual summaries. Each highlight contains a stable dish ID, English/Chinese names and translation status; `zone` is optional.
 
-<a href="https://opencollective.com/wikijs#backers" target="_blank"><img src="https://opencollective.com/wikijs/backers.svg?width=890"></a>
+Existing v1 fields must retain their types and meanings. Add optional fields for compatible changes; introduce a new API version for breaking changes. Missing zone metadata simply omits its label and colored accent. Unknown zone names remain readable without being assigned a misleading known color.
 
-<h2 align="center">Contributors</h2>
+## Development and troubleshooting
 
-This project exists thanks to all the people who contribute. [[Contribute]](https://github.com/Requarks/wiki/blob/master/.github/CONTRIBUTING.md).
-<a href="https://github.com/Requarks/wiki/graphs/contributors"><img src="https://opencollective.com/wikijs/contributors.svg?width=890" /></a>
+Use the inherited Wiki.js development setup and database configuration; see [upstream documentation](https://docs.requarks.io/). This repository includes `yarn dev`, `yarn build`, and `yarn test` scripts. Keep local configuration and credentials out of commits.
 
-<h2 align="center">Special Thanks</h2>
+| Symptom | Check |
+| --- | --- |
+| No dining section | Confirm the fork's rebuilt assets are deployed and the page path is `home`. |
+| Menu unavailable message | Check `/bites-api/today`, the Nginx route, shared Docker network and Aggie Bites API health. |
+| Names only in English | The service has no Chinese translation yet, or the Wiki page locale is English. |
+| No summary paragraph | Expected when `summary_source` is `rule`; highlighted dishes still appear. |
+| Empty or closed meal | Check the service's returned status and official menu; absence of data is not proof of closure. |
+| Changed component not visible | Rebuild the frontend/image; changing server-side page text does not replace bundled Vue assets. |
 
-![Browserstack](https://js.wiki/legacy/logo_browserstack.png)  
-[Browserstack](https://www.browserstack.com/) for providing access to their great cross-browser testing tools.
+The focused Vue compilation, rendering and request-lifecycle tests used for this integration live in the adjacent Aggie Bites repository (`tests/vue`). They cover stale-response handling, unmount cancellation, failures, zone labels, bilingual rendering and dark-mode binding; they do not replace a full Wiki release build or production deployment check.
 
-![Cloudflare](https://js.wiki/legacy/logo_cloudflare.png)  
-[Cloudflare](https://www.cloudflare.com/) for providing their great CDN, SSL and advanced networking services.
+## Project scope and upstream
 
-![DigitalOcean](https://js.wiki/legacy/logo_digitalocean.png)  
-[DigitalOcean](https://m.do.co/c/5f7445bfa4d0) for providing hosting of the Wiki.js documentation site and APIs.
+This fork currently adds the homepage dining integration described above. Inherited permission-management fixes and upstream build-tool updates are not presented as new Agroverse features. User ratings, photo uploads, a new identity provider and a replacement for Wiki.js administration are not implemented by this component.
 
-![Icons8](https://static.requarks.io/logo/icons8-text-h40.png)  
-[Icons8](https://icons8.com/) for providing access to their beautiful icon sets.
-
-![Lokalise](https://static.requarks.io/logo/lokalise-text-h40.png)  
-[Lokalise](https://lokalise.com/) for providing access to their great localization tool.
-
-![MacStadium](https://static.requarks.io/logo/macstadium-h40.png)  
-[MacStadium](https://www.macstadium.com) for providing access to their Mac hardware in the cloud.
-
-![Netlify](https://js.wiki/legacy/logo_netlify.png)  
-[Netlify](https://www.netlify.com) for providing hosting for our website.
-
-![ngrok](https://static.requarks.io/logo/ngrok-h40.png)  
-[ngrok](https://ngrok.com) for providing access to their great HTTP tunneling services.
-
-![Porkbun](https://static.requarks.io/logo/porkbun.png)  
-[Porkbun](https://www.porkbun.com) for providing domain registration services.
+This is an unofficial UC Davis community project, not an official university product. Wiki.js remains licensed under [AGPL-3.0](LICENSE). See the [preserved upstream README](README.upstream.md) for upstream features, credits, support and contribution information.

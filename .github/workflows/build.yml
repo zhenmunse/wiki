@@ -13,6 +13,8 @@ env:
 jobs:
 
   build:
+    # Inherited publication targets belong to upstream, not to this fork.
+    if: github.repository == 'requarks/wiki'
     name: Build
     runs-on: ubuntu-latest
     permissions:
